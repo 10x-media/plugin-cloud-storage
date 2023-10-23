@@ -21,7 +21,7 @@ export const getHandler = ({ getStorageClient, bucket, collection }: Args): Stat
           Bucket: bucket,
           Key: path.posix.join(prefix, req.params.filename),
         })
-        console.log(object)
+        // console.log(object)
         res.set({
           'Accept-Ranges': object.AcceptRanges,
           'Content-Length': object.ContentLength,
@@ -33,10 +33,11 @@ export const getHandler = ({ getStorageClient, bucket, collection }: Args): Stat
           return (object.Body as Readable).pipe(res)
         }
       } catch (e) {
-        console.log(e)
+        console.log(`failed to fetch file from bucket ${path.posix.join(prefix, req.params.filename)}`)
+        // console.log(e)
       }
 
-      console.log('Hello from 10xMedia !')
+      // console.log('Hello from 10xMedia !')
 
 
       return next()
