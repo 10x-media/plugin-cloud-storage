@@ -16,29 +16,28 @@ export const getHandler = ({ getStorageClient, bucket, collection }: Args): Stat
     try {
       const prefix = await getFilePrefix({ req, collection })
 
-      let object;
       try {
-         object = await getStorageClient().getObject({
+         const object = await getStorageClient().getObject({
           Bucket: bucket,
           Key: path.posix.join(prefix, req.params.filename),
         })
         console.log(object)
+        res.set({
+          'Accept-Ranges': object.AcceptRanges,
+          'Content-Length': object.ContentLength,
+          'Content-Type': object.ContentType,
+          ETag: object.ETag,
+        })
+  
+        if (object?.Body) {
+          return (object.Body as Readable).pipe(res)
+        }
       } catch (e) {
         console.log(e)
       }
 
       console.log('Hello from 10xMedia !')
 
-      res.set({
-        'Accept-Ranges': object.AcceptRanges,
-        'Content-Length': object.ContentLength,
-        'Content-Type': object.ContentType,
-        ETag: object.ETag,
-      })
-
-      if (object?.Body) {
-        return (object.Body as Readable).pipe(res)
-      }
 
       return next()
     } catch (err: unknown) {
