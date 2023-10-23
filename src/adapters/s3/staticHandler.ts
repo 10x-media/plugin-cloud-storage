@@ -16,10 +16,16 @@ export const getHandler = ({ getStorageClient, bucket, collection }: Args): Stat
     try {
       const prefix = await getFilePrefix({ req, collection })
 
-      const object = await getStorageClient().getObject({
-        Bucket: bucket,
-        Key: path.posix.join(prefix, req.params.filename),
-      })
+      let object;
+      try {
+         object = await getStorageClient().getObject({
+          Bucket: bucket,
+          Key: path.posix.join(prefix, req.params.filename),
+        })
+        console.log(object)
+      } catch (e) {
+        console.log(e)
+      }
 
       console.log('Hello from 10xMedia !')
 
