@@ -21,6 +21,8 @@ export const getHandler = ({ getStorageClient, bucket, collection }: Args): Stat
         Key: path.posix.join(prefix, req.params.filename),
       })
 
+      console.log('Hello from 10xMedia !')
+
       res.set({
         'Accept-Ranges': object.AcceptRanges,
         'Content-Length': object.ContentLength,
