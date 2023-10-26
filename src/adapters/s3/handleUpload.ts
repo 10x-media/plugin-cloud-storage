@@ -31,17 +31,23 @@ export const getHandleUpload = ({
       : file.buffer
 
     if (file.buffer.length > 0 && file.buffer.length < multipartThreshold) {
-      await getStorageClient().putObject({
-        Bucket: bucket,
-        Key: fileKey,
-        Body: fileBufferOrStream,
-        ACL: acl,
-        ContentType: file.mimeType,
-      })
+      try {
+        await getStorageClient().putObject({
+          Bucket: bucket,
+          Key: fileKey,
+          Body: fileBufferOrStream,
+          ACL: acl,
+          ContentType: file.mimeType,
+        })
+        return data
 
-      return data
+      } catch (e) {
+        console.log(`Failed to upload ${fileKey}`)
+        return 
+      }
+
     }
-
+try {
     const parallelUploadS3 = new Upload({
       client: getStorageClient(),
       params: {
@@ -58,5 +64,9 @@ export const getHandleUpload = ({
     await parallelUploadS3.done()
 
     return data
+  } catch (e) {
+    console.log(`Failed to upload ${fileKey}`)
+    return 
+  }
   }
 }

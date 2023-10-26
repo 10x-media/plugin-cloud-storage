@@ -9,9 +9,14 @@ interface Args {
 
 export const getHandleDelete = ({ getStorageClient, bucket }: Args): HandleDelete => {
   return async ({ filename, doc: { prefix = '' } }) => {
+    try {
     await getStorageClient().deleteObject({
       Bucket: bucket,
       Key: path.posix.join(prefix, filename),
     })
+  } catch (e) {
+    console.log(`Failed to delete ${path.posix.join(prefix, filename)}`)
+    return 
+  }
   }
 }
